@@ -1,0 +1,1531 @@
+  [1m[35m (8.5ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (5.4ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateUsers (20230123174458)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (2.8ms)[0m  [1m[35mCREATE TABLE "users" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "username" varchar, "passoword" varchar, "name" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230123174458"]]
+  [1m[36mTRANSACTION (4.3ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateRooms (20230123183906)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (1.9ms)[0m  [1m[35mCREATE TABLE "rooms" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230123183906"]]
+  [1m[36mTRANSACTION (4.6ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateVideos (20230123183928)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE TABLE "videos" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "views" float, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230123183928"]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["key", "environment"], ["value", "development"], ["created_at", "2023-01-23 18:39:52.119994"], ["updated_at", "2023-01-23 18:39:52.119994"]]
+  [1m[36mTRANSACTION (5.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to AddUserToRooms (20230123191858)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.5ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TEMPORARY TABLE "arooms" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "arooms" ("id","name","created_at","updated_at")
+                     SELECT "id","name","created_at","updated_at" FROM "rooms"[0m
+  [1m[35m (1.8ms)[0m  [1m[35mDROP TABLE "rooms"[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE TABLE "rooms" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "rooms" ("id","name","created_at","updated_at")
+                     SELECT "id","name","created_at","updated_at" FROM "arooms"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mDROP TABLE "arooms"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "index_rooms_on_user_id" ON "rooms" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.2ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE TEMPORARY TABLE "arooms" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "tindex_arooms_on_user_id" ON "arooms" ("user_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "arooms" ("id","name","created_at","updated_at","user_id")
+                     SELECT "id","name","created_at","updated_at","user_id" FROM "rooms"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE "rooms"[0m
+  [1m[35m (0.5ms)[0m  [1m[35mCREATE TABLE "rooms" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, CONSTRAINT "fk_rails_a63cab0c67"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "index_rooms_on_user_id" ON "rooms" ("user_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "rooms" ("id","name","created_at","updated_at","user_id")
+                     SELECT "id","name","created_at","updated_at","user_id" FROM "arooms"[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE "arooms"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.8ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230123191858"]]
+  [1m[36mTRANSACTION (15.5ms)[0m  [1m[36mcommit transaction[0m
+Migrating to AddRoomToVideos (20230123191953)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TEMPORARY TABLE "avideos" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "views" float DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "avideos" ("id","name","views","created_at","updated_at")
+                     SELECT "id","name","views","created_at","updated_at" FROM "videos"[0m
+  [1m[35m (1.4ms)[0m  [1m[35mDROP TABLE "videos"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "videos" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "views" float DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "room_id" integer NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[32mINSERT INTO "videos" ("id","name","views","created_at","updated_at")
+                     SELECT "id","name","views","created_at","updated_at" FROM "avideos"[0m
+  [1m[35m (0.4ms)[0m  [1m[35mDROP TABLE "avideos"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_videos_on_room_id" ON "videos" ("room_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE TEMPORARY TABLE "avideos" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "views" float DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "room_id" integer NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "tindex_avideos_on_room_id" ON "avideos" ("room_id")[0m
+  [1m[35m (0.3ms)[0m  [1m[32mINSERT INTO "avideos" ("id","name","views","created_at","updated_at","room_id")
+                     SELECT "id","name","views","created_at","updated_at","room_id" FROM "videos"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE "videos"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "videos" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "views" float DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "room_id" integer NOT NULL, CONSTRAINT "fk_rails_2995ea286b"
+FOREIGN KEY ("room_id")
+  REFERENCES "rooms" ("id")
+)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "index_videos_on_room_id" ON "videos" ("room_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "videos" ("id","name","views","created_at","updated_at","room_id")
+                     SELECT "id","name","views","created_at","updated_at","room_id" FROM "avideos"[0m
+  [1m[35m (2.7ms)[0m  [1m[35mDROP TABLE "avideos"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230123191953"]]
+  [1m[36mTRANSACTION (6.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 16:38:34 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"sala 1", "user_id"=>1, "room"=>{"name"=>"sala 1", "user_id"=>1}}
+Completed 500 Internal Server Error in 102ms (ActiveRecord: 1.3ms | Allocations: 9853)
+
+
+  
+ActiveRecord::AssociationTypeMismatch (User(#19940) expected, got 1 which is an instance of Integer(#1880)):
+  
+app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Started POST "/api/v1/user/" for ::1 at 2023-01-23 17:47:11 -0300
+  
+ActionController::RoutingError (No route matches [POST] "/api/v1/user"):
+  
+Started POST "/api/v1/user/" for ::1 at 2023-01-23 17:48:16 -0300
+  
+ActionController::RoutingError (No route matches [POST] "/api/v1/user"):
+  
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 17:59:53 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+Completed 500 Internal Server Error in 28ms (ActiveRecord: 3.9ms | Allocations: 3050)
+
+
+  
+ActiveModel::UnknownAttributeError (unknown attribute 'password' for User.
+
+          raise UnknownAttributeError.new(self, k.to_s)
+          ^^^^^):
+  
+app/controllers/api/v1/users_controller.rb:20:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:13:30 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:20:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 21:13:31.489194"], ["updated_at", "2023-01-23 21:13:31.489194"]]
+  ↳ app/controllers/api/v1/users_controller.rb:20:in `create'
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:20:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:25:in `create'
+Completed 204 No Content in 187ms (ActiveRecord: 13.6ms | Allocations: 10126)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:17:07 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana2", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana2"], ["passoword", "123456"], ["name", "Mariana2"], ["created_at", "2023-01-23 21:17:10.789112"], ["updated_at", "2023-01-23 21:17:10.789112"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 204 No Content in 16ms (ActiveRecord: 9.0ms | Allocations: 4559)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:18:07 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"sala1", "userName"=>"Mariana2", "room"=>{"name"=>"sala1"}}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", nil], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Completed 404 Not Found in 2ms (ActiveRecord: 1.1ms | Allocations: 937)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find User with 'id'=sala1):
+  
+app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:20:28 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"ksri", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "ksri"], ["passoword", "123456"], ["name", "ksri"], ["created_at", "2023-01-23 21:20:30.705034"], ["updated_at", "2023-01-23 21:20:30.705034"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 204 No Content in 18ms (ActiveRecord: 9.4ms | Allocations: 4557)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:20:32 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"sala1", "userName"=>"ksri", "room"=>{"name"=>"sala1"}}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", nil], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Completed 404 Not Found in 2ms (ActiveRecord: 0.7ms | Allocations: 859)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find User with 'id'=ksri):
+  
+app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:26:16 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-23 21:26:19.436626"], ["updated_at", "2023-01-23 21:26:19.436626"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (21.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 35ms (Views: 1.2ms | ActiveRecord: 25.1ms | Allocations: 4759)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:26:42 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-23 21:26:43.306452"], ["updated_at", "2023-01-23 21:26:43.306452"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 5], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 53ms (Views: 6.5ms | ActiveRecord: 10.6ms | Allocations: 10344)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:27:59 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sasa", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sasa"], ["passoword", "123456"], ["name", "sasa"], ["created_at", "2023-01-23 21:27:59.834122"], ["updated_at", "2023-01-23 21:27:59.834122"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 6], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 44ms (Views: 0.2ms | ActiveRecord: 5.8ms | Allocations: 2732)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:31:00 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (4.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 21:31:02.769663"], ["updated_at", "2023-01-23 21:31:02.769663"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (28.5ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 7], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 44ms (Views: 0.2ms | ActiveRecord: 35.2ms | Allocations: 4674)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:31:24 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala Virtual 1", "userId"=>7, "room"=>{"name"=>"Sala Virtual 1"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 7], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.2ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?)[0m  [["name", "Sala Virtual 1"], ["created_at", "2023-01-23 21:31:25.056594"], ["updated_at", "2023-01-23 21:31:25.056594"], ["user_id", 7]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.3ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Completed 204 No Content in 49ms (ActiveRecord: 9.4ms | Allocations: 7715)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:32:17 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.8ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 21:32:17.264115"], ["updated_at", "2023-01-23 21:32:17.264115"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 8], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 13ms (Views: 0.2ms | ActiveRecord: 7.8ms | Allocations: 2614)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:32:22 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala Virtual 2", "userId"=>8, "room"=>{"name"=>"Sala Virtual 2"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 8], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (2.2ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?)[0m  [["name", "Sala Virtual 2"], ["created_at", "2023-01-23 21:32:22.267260"], ["updated_at", "2023-01-23 21:32:22.267260"], ["user_id", 8]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.3ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Completed 204 No Content in 16ms (ActiveRecord: 7.9ms | Allocations: 3385)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 18:33:51 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 21:33:54.183657"], ["updated_at", "2023-01-23 21:33:54.183657"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 9], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 18ms (Views: 0.2ms | ActiveRecord: 9.2ms | Allocations: 4627)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:33:57 -0300
+  
+SyntaxError (C:/Users/mariana.castro/Desktop/Projetos/project/videoexhibition/app/controllers/api/v1/rooms_controller.rb:25: syntax error, unexpected local variable or method, expecting '}'
+      name: room.name
+      ^~~~
+C:/Users/mariana.castro/Desktop/Projetos/project/videoexhibition/app/controllers/api/v1/rooms_controller.rb:26: syntax error, unexpected ':', expecting `end'
+      user_id: room.user_id
+             ^
+C:/Users/mariana.castro/Desktop/Projetos/project/videoexhibition/app/controllers/api/v1/rooms_controller.rb:27: syntax error, unexpected '}', expecting `end'
+    }
+    ^
+C:/Users/mariana.castro/Desktop/Projetos/project/videoexhibition/app/controllers/api/v1/rooms_controller.rb:54: syntax error, unexpected end-of-input, expecting `end'):
+  
+app/controllers/api/v1/rooms_controller.rb:25: syntax error, unexpected local variable or method, expecting '}'
+app/controllers/api/v1/rooms_controller.rb:26: syntax error, unexpected ':', expecting `end'
+app/controllers/api/v1/rooms_controller.rb:27: syntax error, unexpected '}', expecting `end'
+app/controllers/api/v1/rooms_controller.rb:54: syntax error, unexpected end-of-input, expecting `end'
+app/controllers/api/v1/rooms_controller.rb:25: syntax error, unexpected local variable or method, expecting '}'
+app/controllers/api/v1/rooms_controller.rb:26: syntax error, unexpected ':', expecting `end'
+app/controllers/api/v1/rooms_controller.rb:27: syntax error, unexpected '}', expecting `end'
+app/controllers/api/v1/rooms_controller.rb:54: syntax error, unexpected end-of-input, expecting `end'
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 18:34:33 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala 2", "userId"=>9, "room"=>{"name"=>"Sala 2"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 9], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.3ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?)[0m  [["name", "Sala 2"], ["created_at", "2023-01-23 21:34:36.115999"], ["updated_at", "2023-01-23 21:34:36.115999"], ["user_id", 9]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.4ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Completed 200 OK in 27ms (Views: 0.3ms | ActiveRecord: 9.2ms | Allocations: 8227)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 19:28:22 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "user"=>{}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.8ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 22:28:22.785916"], ["updated_at", "2023-01-23 22:28:22.785916"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 10], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 69ms (Views: 1.0ms | ActiveRecord: 14.9ms | Allocations: 3337)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 19:28:29 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala virtual 2", "userId"=>10, "room"=>{"name"=>"Sala virtual 2"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 10], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (18.4ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?)[0m  [["name", "Sala virtual 2"], ["created_at", "2023-01-23 22:28:29.235890"], ["updated_at", "2023-01-23 22:28:29.235890"], ["user_id", 10]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.7ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Completed 200 OK in 51ms (Views: 0.4ms | ActiveRecord: 28.1ms | Allocations: 3479)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:12:12 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 23:12:19.093513"], ["updated_at", "2023-01-23 23:12:19.093513"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (15.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 11], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 52ms (Views: 0.9ms | ActiveRecord: 21.8ms | Allocations: 4500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:13:57 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (4.9ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:13:57.486461"], ["updated_at", "2023-01-23 23:13:57.486461"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 12], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 0.5ms | ActiveRecord: 14.6ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:14:13 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:14:14.104346"], ["updated_at", "2023-01-23 23:14:14.104346"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 13], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 35ms (Views: 0.4ms | ActiveRecord: 13.3ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:29:27 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-23 23:29:27.977274"], ["updated_at", "2023-01-23 23:29:27.977274"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 14], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 36ms (Views: 0.5ms | ActiveRecord: 10.8ms | Allocations: 2693)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:32:55 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:32:55.637563"], ["updated_at", "2023-01-23 23:32:55.637563"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 15], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 24ms (Views: 0.5ms | ActiveRecord: 7.7ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:34:20 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:34:20 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:34:21.037205"], ["updated_at", "2023-01-23 23:34:21.037205"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 16], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 0.7ms | ActiveRecord: 11.3ms | Allocations: 2566)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (7.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:34:21.140088"], ["updated_at", "2023-01-23 23:34:21.140088"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 17], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 43ms (Views: 0.3ms | ActiveRecord: 18.5ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:35:39 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:35:39 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:35:39.563456"], ["updated_at", "2023-01-23 23:35:39.563456"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 18], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 31ms (Views: 0.5ms | ActiveRecord: 10.2ms | Allocations: 2566)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:35:39.639359"], ["updated_at", "2023-01-23 23:35:39.639359"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (9.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 19], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 34ms (Views: 0.3ms | ActiveRecord: 13.2ms | Allocations: 2500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:36:02 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:36:02 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:36:03.059815"], ["updated_at", "2023-01-23 23:36:03.059815"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 20], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 50ms (Views: 0.3ms | ActiveRecord: 11.2ms | Allocations: 2568)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:36:03.145375"], ["updated_at", "2023-01-23 23:36:03.145375"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (9.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 21], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 28ms (Views: 0.4ms | ActiveRecord: 12.6ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:38:44 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:38:44.868983"], ["updated_at", "2023-01-23 23:38:44.868983"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 22], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 27ms (Views: 0.3ms | ActiveRecord: 10.5ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:38:46 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:38:46.956702"], ["updated_at", "2023-01-23 23:38:46.956702"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (1.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 23], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 32ms (Views: 0.8ms | ActiveRecord: 12.9ms | Allocations: 2500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:39:34 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:39:34.309290"], ["updated_at", "2023-01-23 23:39:34.309290"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 24], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 49ms (Views: 0.5ms | ActiveRecord: 9.8ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:39:51 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:39:51.931421"], ["updated_at", "2023-01-23 23:39:51.931421"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 25], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 31ms (Views: 0.3ms | ActiveRecord: 9.5ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:43:06 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:43:06 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:43:06.749066"], ["updated_at", "2023-01-23 23:43:06.749066"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 26], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 31ms (Views: 0.3ms | ActiveRecord: 11.3ms | Allocations: 2578)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:43:06.807674"], ["updated_at", "2023-01-23 23:43:06.807674"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 27], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 37ms (Views: 0.7ms | ActiveRecord: 10.5ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:44:07 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:44:07 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:44:07.515781"], ["updated_at", "2023-01-23 23:44:07.515781"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 28], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 39ms (Views: 3.8ms | ActiveRecord: 10.7ms | Allocations: 2516)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.8ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:44:07.585073"], ["updated_at", "2023-01-23 23:44:07.585073"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 29], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 1.2ms | ActiveRecord: 11.8ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:45:11 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:45:11 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:45:11.242223"], ["updated_at", "2023-01-23 23:45:11.242223"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 30], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 48ms (Views: 0.4ms | ActiveRecord: 14.7ms | Allocations: 2577)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:45:11.332198"], ["updated_at", "2023-01-23 23:45:11.332198"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (1.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 31], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 35ms (Views: 0.4ms | ActiveRecord: 12.1ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:45:43 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:45:44.075246"], ["updated_at", "2023-01-23 23:45:44.075246"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 32], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 32ms (Views: 0.4ms | ActiveRecord: 9.6ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:45:48 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (6.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:45:48.592883"], ["updated_at", "2023-01-23 23:45:48.592883"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 33], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 30ms (Views: 0.3ms | ActiveRecord: 14.3ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:10 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:10 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:10.484406"], ["updated_at", "2023-01-23 23:48:10.484406"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (15.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 34], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 63ms (Views: 0.3ms | ActiveRecord: 18.6ms | Allocations: 2575)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:10.576645"], ["updated_at", "2023-01-23 23:48:10.576645"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.8ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 35], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 42ms (Views: 0.7ms | ActiveRecord: 12.5ms | Allocations: 2500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:20 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:20 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:20.543202"], ["updated_at", "2023-01-23 23:48:20.543202"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 36], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 25ms (Views: 0.3ms | ActiveRecord: 10.0ms | Allocations: 2516)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:20.597068"], ["updated_at", "2023-01-23 23:48:20.597068"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 37], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 31ms (Views: 0.3ms | ActiveRecord: 9.1ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:40 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:48:40 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:41.028298"], ["updated_at", "2023-01-23 23:48:41.028298"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 38], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 44ms (Views: 0.5ms | ActiveRecord: 15.1ms | Allocations: 2575)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:48:41.102274"], ["updated_at", "2023-01-23 23:48:41.102274"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 39], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 118ms (Views: 0.5ms | ActiveRecord: 12.1ms | Allocations: 2500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:50:26 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:50:26 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:50:26.514558"], ["updated_at", "2023-01-23 23:50:26.514558"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 40], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 43ms (Views: 0.3ms | ActiveRecord: 9.8ms | Allocations: 2564)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:50:26.591471"], ["updated_at", "2023-01-23 23:50:26.591471"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 41], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 33ms (Views: 0.5ms | ActiveRecord: 12.9ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:50:49 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:50:49 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (5.7ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:50:50.058967"], ["updated_at", "2023-01-23 23:50:50.058967"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 42], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 33ms (Views: 0.4ms | ActiveRecord: 14.0ms | Allocations: 2564)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.9ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:50:50.215273"], ["updated_at", "2023-01-23 23:50:50.215273"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (9.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (1.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 43], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 96ms (Views: 0.6ms | ActiveRecord: 14.7ms | Allocations: 2549)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:51:01 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:51:01 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:51:01.636595"], ["updated_at", "2023-01-23 23:51:01.636595"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 44], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 27ms (Views: 0.3ms | ActiveRecord: 10.4ms | Allocations: 2575)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (7.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:51:01.705295"], ["updated_at", "2023-01-23 23:51:01.705295"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 45], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 35ms (Views: 0.3ms | ActiveRecord: 15.0ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:51:17 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:51:17 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:51:17.460636"], ["updated_at", "2023-01-23 23:51:17.460636"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 46], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 44ms (Views: 0.3ms | ActiveRecord: 13.2ms | Allocations: 2576)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (5.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:51:17.543457"], ["updated_at", "2023-01-23 23:51:17.543457"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 47], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 27ms (Views: 0.4ms | ActiveRecord: 12.0ms | Allocations: 2549)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:52:20 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:52:20 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"sasa", "user"=>{"name"=>"sasa"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (5.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "sasa"], ["created_at", "2023-01-23 23:52:20.782292"], ["updated_at", "2023-01-23 23:52:20.782292"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 48], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 47ms (Views: 1.4ms | ActiveRecord: 14.1ms | Allocations: 2527)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"sasa", "user"=>{"name"=>"sasa"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "sasa"], ["created_at", "2023-01-23 23:52:20.886018"], ["updated_at", "2023-01-23 23:52:20.886018"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 49], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 33ms (Views: 0.4ms | ActiveRecord: 14.0ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:53:56 -0300
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:53:56 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-23 23:53:56.944361"], ["updated_at", "2023-01-23 23:53:56.944361"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 50], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 22ms (Views: 0.3ms | ActiveRecord: 10.1ms | Allocations: 2564)
+
+
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-23 23:53:56.983157"], ["updated_at", "2023-01-23 23:53:56.983157"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.5ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 51], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 25ms (Views: 0.3ms | ActiveRecord: 11.6ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:54:15 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-23 23:54:15.174920"], ["updated_at", "2023-01-23 23:54:15.174920"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 52], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 42ms (Views: 0.4ms | ActiveRecord: 12.0ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:54:35 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sa", "name"=>"sa", "user"=>{"name"=>"sa"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (3.1ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sa"], ["passoword", "123456"], ["name", "sa"], ["created_at", "2023-01-23 23:54:36.073469"], ["updated_at", "2023-01-23 23:54:36.073469"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (14.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 53], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 46ms (Views: 1.7ms | ActiveRecord: 18.5ms | Allocations: 2549)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:55:05 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sass", "name"=>"ss", "user"=>{"name"=>"ss"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (18.9ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sass"], ["passoword", "123456"], ["name", "ss"], ["created_at", "2023-01-23 23:55:06.030029"], ["updated_at", "2023-01-23 23:55:06.030029"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 54], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 43ms (Views: 0.3ms | ActiveRecord: 27.5ms | Allocations: 2551)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:55:44 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (19.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:55:44.438183"], ["updated_at", "2023-01-23 23:55:44.438183"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 55], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 45ms (Views: 0.4ms | ActiveRecord: 27.9ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:56:24 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (18.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:56:24.362951"], ["updated_at", "2023-01-23 23:56:24.362951"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 56], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 39ms (Views: 0.5ms | ActiveRecord: 26.2ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 20:57:00 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"mariana_rcastro", "user"=>{"name"=>"mariana_rcastro"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (18.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "mariana_rcastro"], ["created_at", "2023-01-23 23:57:00.439227"], ["updated_at", "2023-01-23 23:57:00.439227"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 57], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 42ms (Views: 0.3ms | ActiveRecord: 27.3ms | Allocations: 2551)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 20:57:42 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Dev", "room"=>{"name"=>"Sala de Dev"}}
+Completed 404 Not Found in 25ms (ActiveRecord: 0.0ms | Allocations: 1831)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 20:57:58 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Dev", "room"=>{"name"=>"Sala de Dev"}}
+Completed 404 Not Found in 2ms (ActiveRecord: 0.0ms | Allocations: 295)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 20:59:13 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Dev", "room"=>{"name"=>"Sala de Dev"}}
+Completed 404 Not Found in 3ms (ActiveRecord: 0.0ms | Allocations: 295)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 21:01:18 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Dev", "room"=>{"name"=>"Sala de Dev"}}
+Completed 404 Not Found in 2ms (ActiveRecord: 0.0ms | Allocations: 295)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 21:01:27 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-24 00:01:27.657737"], ["updated_at", "2023-01-24 00:01:27.657737"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 58], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 26ms (Views: 0.8ms | ActiveRecord: 10.2ms | Allocations: 2738)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 21:01:35 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Dev", "room"=>{"name"=>"Sala de Dev"}}
+Completed 404 Not Found in 13ms (ActiveRecord: 0.0ms | Allocations: 294)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 21:02:22 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"Sala de Dev", "user"=>{"name"=>"Sala de Dev"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (22.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "Sala de Dev"], ["created_at", "2023-01-24 00:02:22.231579"], ["updated_at", "2023-01-24 00:02:22.231579"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 59], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 0.3ms | ActiveRecord: 29.2ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 21:02:38 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"Sala de Dev", "user"=>{"name"=>"Sala de Dev"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.9ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "Sala de Dev"], ["created_at", "2023-01-24 00:02:38.573515"], ["updated_at", "2023-01-24 00:02:38.573515"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 60], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 24ms (Views: 0.5ms | ActiveRecord: 9.8ms | Allocations: 2500)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 21:02:55 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"sa", "user"=>{"name"=>"sa"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (21.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "sa"], ["created_at", "2023-01-24 00:02:55.319045"], ["updated_at", "2023-01-24 00:02:55.319045"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 61], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 0.3ms | ActiveRecord: 29.3ms | Allocations: 2548)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 21:03:07 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"sasa", "userId"=>61, "room"=>{"name"=>"sasa"}}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 61], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (3.2ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?)[0m  [["name", "sasa"], ["created_at", "2023-01-24 00:03:07.339407"], ["updated_at", "2023-01-24 00:03:07.339407"], ["user_id", 61]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (10.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.7ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 5], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:22:in `create'
+Completed 200 OK in 49ms (Views: 1.0ms | ActiveRecord: 14.8ms | Allocations: 3918)
+
+
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 21:57:04 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Developers", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"Sala de Developers"}}
+Completed 500 Internal Server Error in 27ms (ActiveRecord: 0.0ms | Allocations: 1866)
+
+
+  
+ActiveModel::UnknownAttributeError (unknown attribute 'url' for Room.
+
+          raise UnknownAttributeError.new(self, k.to_s)
+          ^^^^^):
+  
+app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to AddNewFieldsToRooms (20230124010039)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Create (4.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230124010039"]]
+  [1m[36mTRANSACTION (11.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.9ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to AddNewFieldsToRooms (20230124010358)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (4.7ms)[0m  [1m[35mALTER TABLE "rooms" ADD "url" varchar[0m
+  [1m[36mActiveRecord::SchemaMigration Create (1.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20230124010358"]]
+  [1m[36mTRANSACTION (22.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 22:04:56 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Developers", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"Sala de Developers"}}
+Completed 500 Internal Server Error in 8ms (ActiveRecord: 0.0ms | Allocations: 1810)
+
+
+  
+ActiveModel::UnknownAttributeError (unknown attribute 'url' for Room.
+
+          raise UnknownAttributeError.new(self, k.to_s)
+          ^^^^^):
+  
+app/controllers/api/v1/rooms_controller.rb:18:in `create'
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 22:05:53 -0300
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala de Developers", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"Sala de Developers", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA"}}
+Completed 404 Not Found in 91ms (ActiveRecord: 2.7ms | Allocations: 8166)
+
+
+  
+ActiveRecord::RecordNotFound (Couldn't find Room without an ID):
+  
+app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:06:13 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-24 01:06:13.929814"], ["updated_at", "2023-01-24 01:06:13.929814"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (9.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 62], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 47ms (Views: 1.1ms | ActiveRecord: 14.6ms | Allocations: 6586)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 22:06:23 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala 10", "userId"=>62, "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"Sala 10", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 62], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (2.4ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", "Sala 10"], ["created_at", "2023-01-24 01:06:24.019060"], ["updated_at", "2023-01-24 01:06:24.019060"], ["user_id", 62], ["url", "https://www.youtube.com/watch?v=7KDRqBpT8NA"]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.6ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 6], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 283ms (Views: 0.4ms | ActiveRecord: 11.6ms | Allocations: 7180)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:31:39 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (7.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-24 01:31:39.802049"], ["updated_at", "2023-01-24 01:31:39.802049"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (8.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (1.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 63], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 108ms (Views: 2.5ms | ActiveRecord: 21.8ms | Allocations: 2768)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:32:37 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana_rcastro", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana_rcastro"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-24 01:32:37.818429"], ["updated_at", "2023-01-24 01:32:37.818429"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (7.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 64], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 27ms (Views: 0.3ms | ActiveRecord: 10.4ms | Allocations: 2569)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:37:58 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"kaka", "name"=>"kaka", "user"=>{"name"=>"kaka"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "kaka"], ["passoword", "123456"], ["name", "kaka"], ["created_at", "2023-01-24 01:37:58.758435"], ["updated_at", "2023-01-24 01:37:58.758435"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 65], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 22ms (Views: 0.3ms | ActiveRecord: 8.7ms | Allocations: 2694)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 22:41:45 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"dssssssssa", "userId"=>65, "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"dssssssssa", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 65], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.9ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", "dssssssssa"], ["created_at", "2023-01-24 01:41:45.752252"], ["updated_at", "2023-01-24 01:41:45.752252"], ["user_id", 65], ["url", "https://www.youtube.com/watch?v=7KDRqBpT8NA"]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.3ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.4ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 7], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 43ms (Views: 0.6ms | ActiveRecord: 9.1ms | Allocations: 3493)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:43:44 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana_rcastro", "name"=>"MAriana", "user"=>{"name"=>"MAriana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana_rcastro"], ["passoword", "123456"], ["name", "MAriana"], ["created_at", "2023-01-24 01:43:44.940339"], ["updated_at", "2023-01-24 01:43:44.940339"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 66], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 132ms (Views: 0.2ms | ActiveRecord: 7.4ms | Allocations: 2548)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 22:43:55 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"userId"=>66, "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 66], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.0ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", nil], ["created_at", "2023-01-24 01:43:55.524995"], ["updated_at", "2023-01-24 01:43:55.524995"], ["user_id", 66], ["url", "https://www.youtube.com/watch?v=7KDRqBpT8NA"]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.3ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 8], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 40ms (Views: 0.6ms | ActiveRecord: 5.8ms | Allocations: 3409)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:46:00 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "name"=>"mariana", "user"=>{"name"=>"mariana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.3ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "mariana"], ["created_at", "2023-01-24 01:46:00.593035"], ["updated_at", "2023-01-24 01:46:00.593035"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.9ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 67], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 20ms (Views: 0.2ms | ActiveRecord: 7.6ms | Allocations: 2566)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:51:07 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "name"=>"mariana", "user"=>{"name"=>"mariana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "mariana"], ["created_at", "2023-01-24 01:51:07.219462"], ["updated_at", "2023-01-24 01:51:07.219462"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 68], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 17ms (Views: 0.2ms | ActiveRecord: 6.6ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:54:08 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sas", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sas"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-24 01:54:08.574717"], ["updated_at", "2023-01-24 01:54:08.574717"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 69], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 18ms (Views: 0.2ms | ActiveRecord: 7.7ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 22:59:51 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"sasa", "name"=>"sas", "user"=>{"name"=>"sas"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.9ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "sasa"], ["passoword", "123456"], ["name", "sas"], ["created_at", "2023-01-24 01:59:51.374688"], ["updated_at", "2023-01-24 01:59:51.374688"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 70], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 19ms (Views: 0.2ms | ActiveRecord: 7.0ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:00:30 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"asdas", "name"=>"sdds", "user"=>{"name"=>"sdds"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "asdas"], ["passoword", "123456"], ["name", "sdds"], ["created_at", "2023-01-24 02:00:30.412028"], ["updated_at", "2023-01-24 02:00:30.412028"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 71], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 19ms (Views: 0.2ms | ActiveRecord: 7.4ms | Allocations: 2548)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:03:34 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.6ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", nil], ["passoword", "123456"], ["name", nil], ["created_at", "2023-01-24 02:03:34.875015"], ["updated_at", "2023-01-24 02:03:34.875015"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (4.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 72], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 24ms (Views: 0.4ms | ActiveRecord: 12.6ms | Allocations: 2498)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:04:02 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"user"=>{}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", nil], ["passoword", "123456"], ["name", nil], ["created_at", "2023-01-24 02:04:02.340682"], ["updated_at", "2023-01-24 02:04:02.340682"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 73], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 28ms (Views: 0.6ms | ActiveRecord: 9.2ms | Allocations: 2546)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:04:29 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"name"=>"", "user"=>{"name"=>""}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (2.0ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", nil], ["passoword", "123456"], ["name", ""], ["created_at", "2023-01-24 02:04:29.325471"], ["updated_at", "2023-01-24 02:04:29.325471"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 74], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 21ms (Views: 0.2ms | ActiveRecord: 7.5ms | Allocations: 2499)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 23:04:31 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"", "userId"=>74, "url"=>"", "room"=>{"name"=>"", "url"=>""}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 74], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.7ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", ""], ["created_at", "2023-01-24 02:04:31.914832"], ["updated_at", "2023-01-24 02:04:31.914832"], ["user_id", 74], ["url", ""]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.6ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 9], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 31ms (Views: 0.2ms | ActiveRecord: 8.0ms | Allocations: 3457)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:04:47 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"mariana", "name"=>"mariana", "user"=>{"name"=>"mariana"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.4ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "mariana"], ["passoword", "123456"], ["name", "mariana"], ["created_at", "2023-01-24 02:04:47.592537"], ["updated_at", "2023-01-24 02:04:47.592537"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.6ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 75], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 15ms (Views: 0.2ms | ActiveRecord: 6.3ms | Allocations: 2548)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 23:05:32 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"Sala1", "userId"=>75, "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA", "room"=>{"name"=>"Sala1", "url"=>"https://www.youtube.com/watch?v=7KDRqBpT8NA"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 75], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.0ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", "Sala1"], ["created_at", "2023-01-24 02:05:32.556158"], ["updated_at", "2023-01-24 02:05:32.556158"], ["user_id", 75], ["url", "https://www.youtube.com/watch?v=7KDRqBpT8NA"]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (4.5ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.3ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 10], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 19ms (Views: 0.3ms | ActiveRecord: 6.2ms | Allocations: 3461)
+
+
+Started POST "/api/v1/users/" for ::1 at 2023-01-23 23:11:21 -0300
+Processing by Api::V1::UsersController#create as HTML
+  Parameters: {"userName"=>"Mariana", "name"=>"Mariana", "user"=>{"name"=>"Mariana"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Create (1.2ms)[0m  [1m[32mINSERT INTO "users" ("username", "passoword", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["username", "Mariana"], ["passoword", "123456"], ["name", "Mariana"], ["created_at", "2023-01-24 02:11:21.826864"], ["updated_at", "2023-01-24 02:11:21.826864"]]
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (5.2ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/users_controller.rb:18:in `create'
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 76], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/users_controller.rb:23:in `create'
+Completed 200 OK in 33ms (Views: 0.2ms | ActiveRecord: 7.7ms | Allocations: 2694)
+
+
+Started POST "/api/v1/rooms/" for ::1 at 2023-01-23 23:11:30 -0300
+Processing by Api::V1::RoomsController#create as HTML
+  Parameters: {"name"=>"sasasa", "userId"=>76, "url"=>"https://www.youtube.com/watch?v=ZKdIPUfXQgc&list=RDCMUCRQv-3VvPT9mArF5RfrlpKQ&index=19", "room"=>{"name"=>"sasasa", "url"=>"https://www.youtube.com/watch?v=ZKdIPUfXQgc&list=RDCMUCRQv-3VvPT9mArF5RfrlpKQ&index=19"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 76], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Create (1.8ms)[0m  [1m[32mINSERT INTO "rooms" ("name", "created_at", "updated_at", "user_id", "url") VALUES (?, ?, ?, ?, ?)[0m  [["name", "sasasa"], ["created_at", "2023-01-24 02:11:30.122162"], ["updated_at", "2023-01-24 02:11:30.122162"], ["user_id", 76], ["url", "https://www.youtube.com/watch?v=ZKdIPUfXQgc&list=RDCMUCRQv-3VvPT9mArF5RfrlpKQ&index=19"]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mTRANSACTION (6.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/api/v1/rooms_controller.rb:18:in `create'
+  [1m[36mRoom Load (0.6ms)[0m  [1m[34mSELECT "rooms".* FROM "rooms" WHERE "rooms"."id" = ? LIMIT ?[0m  [["id", 11], ["LIMIT", 1]]
+  ↳ app/controllers/api/v1/rooms_controller.rb:23:in `create'
+Completed 200 OK in 27ms (Views: 0.8ms | ActiveRecord: 8.9ms | Allocations: 3497)
+
+
